@@ -1,4 +1,5 @@
-// version 2 Add records and store in an array: display the array
+// most code in this program is from BicycleFrame2.java 
+//  Add records and store in an array: display the array
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
@@ -7,10 +8,13 @@ import java.util.Calendar;
 
 /** manages an array of scooters: add and display implemented, but only for owner name */
 public class Adds_Records extends JFrame implements ActionListener{
-
+	
+	 // private instance variables
+    private JButton rentButton;
+    private JLabel welcomeLabel;
      JMenu fileMenu,scooterMenu,rentMenu;
      Scooter [] scooters; // an array of scooters
-     int count; // number of valid scooters in the array
+     int count=0; // number of valid scooters in the array
 
     // driver
     public static void main( String[] args ) {
@@ -22,14 +26,22 @@ public class Adds_Records extends JFrame implements ActionListener{
     public Adds_Records( ) {
         newSystem(); // create the array and set the count to 0
         //set the frame default properties
-        setTitle     ( "Scooter shop system" );
-        setSize      ( 600,200 );
-        setLocation  ( 200,200 );
-        Container pane = getContentPane();
-      //  pane.setBackground(Color.blue);
-        pane.setBackground(new Color(240,210,240));
+        setTitle     ( "Scooter shop system" ); //modified
+        setSize      ( 1000,400 ); //modified
+        setResizable (false); //modified
+        setLocation  ( 350,250 ); //modified
+     
+       
         //register 'Exit upon closing' as a default close operation
-        setDefaultCloseOperation( EXIT_ON_CLOSE );                    
+        setDefaultCloseOperation( EXIT_ON_CLOSE );  
+        
+        // get the content pane 
+         Container cPane = getContentPane( );
+        cPane.setLocation(350,200);
+        	                  
+		//add JLabel object
+		welcomeLabel = new JLabel( "Welcome to Rent a Scooter. On our site you can rent a scooter and add a scooter to the system. ");
+        cPane.add(welcomeLabel);
 
         createFileMenu();
         createScooterMenu();
@@ -37,9 +49,11 @@ public class Adds_Records extends JFrame implements ActionListener{
         //and add them to the menubar
         JMenuBar menuBar = new JMenuBar();
         setJMenuBar(menuBar);
+         // setting the backgroung color of the menubar to yellow
+        menuBar.setBackground(Color.yellow); //modified
         menuBar.add(fileMenu);
         menuBar.add(scooterMenu);
-        menuBar.add(rentMenu);
+        menuBar.add(rentMenu); //modified
      }
 
       public void newSystem() {
@@ -51,37 +65,55 @@ public class Adds_Records extends JFrame implements ActionListener{
        */   // NEW
       public void addScooter(){
       	Scooter temp = new Scooter();
-      	temp.setOwner(JOptionPane.showInputDialog("Who owns this scooter?"));
-      	scooters[count] = temp; // 'default bike
-      	// set the attributes: ask the user for owner name etc
+      	temp.setOwner(JOptionPane.showInputDialog("Who owns this scooter?")); //modified
+      	temp.setMake(JOptionPane.showInputDialog("What is the make of this scooter?")); //modified
+      	temp.setValue(Integer.parseInt(JOptionPane.showInputDialog("How much is this scooter?"))); //modified
+      	scooters[count] = temp; // 'default scooter
+      	// set the attributes: ask the user for owner name 
       	count++; // now there is one more scooter in the system
       }
       
       /** records the date of the rental and the return date getting the details
-        from the user and usign a date forumla **/
+        from the user and using a date forumla also calcuting the cost of the rental**/
         
       public void rentScooter(){
       	   // Get an instance of a Calendar, using the current time.
-
-                                 SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
-
-                                Calendar calendar = Calendar.getInstance();
-
-                                System.out.println(dateFormat.format(calendar.getTime()));
 
         
 			Calendar cal = Calendar.getInstance();
 			
 			
-		int	days= Integer.parseInt(JOptionPane.showInputDialog("How many days would you like to rent the scooter for? "));
+		int	days= Integer.parseInt(JOptionPane.showInputDialog("How many days would you like to rent the scooter for? ")); //modified
 
 
-                       System.out.println("The rental date is: "+cal.getTime());
-                       cal.add(Calendar.DATE, days);                                  //added the amount of days the user wants to rent for
-                       System.out.println("The return date : "+cal.getTime());
+                       JOptionPane.showMessageDialog(null,"The rental date is: "+cal.getTime());
+                       cal.add(Calendar.DATE, days);                                  //added the amount of days the user wants to rent for //modified
+                       JOptionPane.showMessageDialog(null,"The return date : "+cal.getTime());
+  					JOptionPane.showMessageDialog(null,"The cost of the rental is: € " + days *30); //modified
+  						
+  	// below goten from sample program MyJFrame3.java
+  						     	 
+         // get the content pane and set properties
+        Container contentPane = getContentPane();
+        
+      	 // construct a button and make this Adds_Records listen for
+        // and  handle button events
+        rentButton = new JButton("Rent");
+        rentButton.setBounds(110,230,80,40);
+	    rentButton.addActionListener(this);
+        contentPane.add(rentButton);
   
+  // get the content pane //// next 2 lines goten from sample program MyJFrame3.java
+   Container cPane2 = getContentPane( );
+        cPane2.setLayout(new FlowLayout());
   
+  //create and place button on the frame
+        rentButton = new JButton("Rent");
+        cPane2.add(rentButton);
 
+        //register this frame as an action listener of the two buttons
+        rentButton.addActionListener(this);
+}
       /*****************************************************
 *    Title: Java Date and Calendar Examples
 *    Author: Anil Nivargi     at  8/17/2014 11:40:00 pm
@@ -91,13 +123,13 @@ public class Adds_Records extends JFrame implements ActionListener{
 *    Availability: http://adnjavainterview.blogspot.in/2014/08/java-date-and-calendar-examples.html
 *    Modified: 27/11/2014 changing the word Date to DATE , adding in the users input so it an be any amount of days for rental
 *****************************************************/ 
-}
 
 
 
-      /** Displays a list of all scooters in a JTextArea
-       */  // NEW
-      public void display(){
+
+      //Displays a list of all scooters in a JTextArea
+        
+      public void displayScooters(){
       	JTextArea area = new JTextArea();
       	if (count>0) {
       	  area.setText("Scooter List: \n\n");
@@ -115,90 +147,30 @@ public class Adds_Records extends JFrame implements ActionListener{
       	if (e.getActionCommand() .equals ("Quit")){
       	 showMessage("Shutting down the system");
       	 System.exit(0);
-      	}
+      	}// else if
       	else if (e.getActionCommand() .equals ("Add")){
       	   addScooter(); // branch to a separate method
-      	}
+      	}// else if
       	else if (e.getActionCommand() .equals ("Display")){
-           display();
-      	}
+           displayScooters();
+      	}// else if
       	else if (e.getActionCommand() .equals ("New File")){
       		newSystem();
-        }
+        }// else if
       	else if (e.getActionCommand() .equals ("Save")){
-      	 showMessage("Save not implemented yet");
+      		
+      	 showMessage("Save has been made");
       	}// else if
 
       	else if (e.getActionCommand() .equals ("Open")){
       	 showMessage("Open not implemented yet");
-      	}
+      	}// else if
       	else if (e.getActionCommand() .equals ("Rent scooter")){
       		rentScooter(); // branch to a separate method
-      	}
+      	}// else
       	else
       	  showMessage("I have no idea what you clicked");
       } // actionPerformed
 
         private void createFileMenu(){
-         // create the menu
-      	fileMenu = new JMenu("File");
-      	// declare a menu item (re-usable)
-      	JMenuItem item;
-      	
-      	item = new JMenuItem("Save");
-      	item.addActionListener(this);
-      	fileMenu.add(item);
-      	
-      	item = new JMenuItem("Open");
-      	item.addActionListener(this);
-      	fileMenu.add(item);
-      	
-      	item = new JMenuItem("New File");
-      	item.addActionListener(this);
-      	fileMenu.add(item);
-      	
-      	// create the 'quit' option
-      	fileMenu.addSeparator();
-      	item = new JMenuItem("Quit");
-      	item.addActionListener(this);
-      	fileMenu.add(item);
-      }
-
-      private void createScooterMenu(){
-      	// create the menu
-      	scooterMenu = new JMenu("Scooter");
-      	// declare a menu item (re-usable)
-      	JMenuItem item;
-
-      	item = new JMenuItem("Add");
-      	item.addActionListener(this);
-      	scooterMenu.add(item);
-
-      	item = new JMenuItem("Display");
-      	item.addActionListener(this);
-      	scooterMenu.add(item);
-      }
-      
-      private void createRentMenu(){
-      	//create the menu
-      	rentMenu = new JMenu("Rent");
-      	// declare a menu item (re-usable)
-      		JMenuItem item;
-
-      	item = new JMenuItem("Rent scooter");
-      	item.addActionListener(this);
-      	rentMenu.add(item);
-
-      }
-      
-    
-       /** utility methods to make the code simpler */
-      public void showMessage (String s){
-      	JOptionPane.showMessageDialog(null,s);
-      }
-
-      public void showMessage (JTextArea s){
-      	JOptionPane.showMessageDialog(null,s);
-      }
-}
-
+         // create
